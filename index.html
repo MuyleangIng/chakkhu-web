@@ -447,35 +447,19 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
     <div class="eyebrow">Architecture · the plan</div>
     <h2>A small model built for Khmer</h2>
     <p class="sub">Big AI chat models that "see" pictures make 33–89% mistakes on Khmer. Small, specialised readers win, so Chakkhu is one:
-      about <b>15 million</b> parameters, trained from scratch, the same size class as the Akkhara keyboard model.</p>
+      <b>18.6 million</b> parameters (about 19 MB on a phone), trained from scratch, the same size class as the Akkhara keyboard model. The model code is written and tested; training comes next.</p>
 
-    <div class="pipe" aria-label="How Chakkhu reads a line">
-      <div class="node">
-        <div class="tag">Input</div>
-        <div class="mini-photo km">ខ្ញុំចង់ទៅសាលារៀន</div>
-        <b>Line image</b><span>one text line, 48 px high, any width</span>
-      </div>
-      <div class="arrow" aria-hidden="true"></div>
-      <div class="node"><div class="tag">1 · Eyes</div><b>CNN</b><span>finds strokes and letter shapes, turns the line into a row of small "views"</span></div>
-      <div class="arrow" aria-hidden="true"></div>
-      <div class="node"><div class="tag">2 · Context</div><b>Transformer encoder</b><span>looks at the whole line at once, so stacked letters and left-side vowels make sense</span></div>
-      <div class="arrow" aria-hidden="true"></div>
-      <div class="node split">
-        <div class="half"><div class="tag">3a · Draft</div><b>CTC head</b><span>fast left-to-right draft; teaches the model where each letter is</span></div>
-        <div class="half"><div class="tag">3b · Write</div><b>Small decoder</b><span>writes the final text letter by letter, in the correct typed order</span></div>
-      </div>
-      <div class="arrow" aria-hidden="true"></div>
-      <div class="node out-node"><div class="tag">Output</div><div class="km result">ខ្ញុំចង់ទៅសាលារៀន</div><span>text you can copy</span></div>
-    </div>
+    <a class="zoom" href="assets/architecture.png" data-alt="Chakkhu architecture: training plan, model, ONNX export and apps"><img class="figure" src="assets/architecture.png" alt="Chakkhu architecture: CNN eyes, Transformer encoder, CTC head and cluster decoder, runaway guard, beam search, ONNX export and apps" loading="lazy"></a>
 
     <div class="grid g2" style="margin-top:26px">
       <div class="card">
         <h3>Why this design</h3>
         <ul class="ticks">
-          <li><b>Both heads learn together.</b> CTC makes training fast and stable; the decoder fixes the Khmer letter order.</li>
-          <li><b>Small enough for a phone.</b> Exported to ONNX int8 like the Akkhara keyboard; the same engine can run on Android, Windows and Mac.</li>
-          <li><b>Never runs out of data.</b> We draw our own 390,000 clean Khmer sentences with 35 open fonts, plus open datasets.</li>
-          <li><b>Our niche:</b> chat screenshots and mixed Khmer + English lines.</li>
+          <li><b>Whole clusters, not letters.</b> <span class="km">ស្ត្រី</span> is one token (3,402 in total), so lines are 1.74× shorter and vowels drawn on the left need no reordering.</li>
+          <li><b>Knows Khmer before it reads.</b> The decoder first learns from 390k Khmer sentences, so blurry letters are guessed from the words around them.</li>
+          <li><b>Keeps the height.</b> 64 px lines, 2 rows inside the model, so stacked letters above and below are not lost.</li>
+          <li><b>Never invents text.</b> The CTC head counts the letters; if the decoder writes too much, its draft is used. Netra's run-aways were 17% of its errors.</li>
+          <li><b>Trained on the hard cases</b>: short lines, English, night photos, Messenger images and chat screenshots.</li>
         </ul>
       </div>
       <div class="card">
@@ -485,7 +469,7 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
           <tr><td><b>CRNN + CTC</b><small>classic, tiny, fast</small></td><td><span class="status st-test">order breaks</span></td></tr>
           <tr><td><b>Big vision AI</b><small>billions of parameters</small></td><td><span class="status st-bad">33–89% errors</span></td></tr>
           <tr><td><b>Encoder–decoder</b><small>TrOCR style</small></td><td><span class="status st-ok">good, slower</span></td></tr>
-          <tr class="pick"><td><b>Hybrid CTC + decoder</b><small>our choice, ~15M</small></td><td><span class="status st-ok">fast + right order</span></td></tr>
+          <tr class="pick"><td><b>Hybrid CTC + cluster decoder</b><small>our choice, 18.6M</small></td><td><span class="status st-ok">fast + right order</span></td></tr>
         </table>
       </div>
     </div>
@@ -566,9 +550,10 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
     <p class="sub">One step at a time, each with a check before the next.</p>
     <div class="road">
       <div class="rstep done"><span class="status st-ok">Done</span><h3>Collect data &amp; fonts</h3><p>6 open training sets, 35 fonts, the KHOB benchmark; licenses checked.</p></div>
+      <div class="rstep done"><span class="status st-ok">Done</span><h3>Model code + tokenizer</h3><p>Cluster tokenizer (3,402 tokens) and the 18.6M model, tested: 13 ms per line on a laptop CPU.</p></div>
       <div class="rstep done"><span class="status st-ok">Done</span><h3>Baseline report</h3><p>Netra-OCR and Tesseract scored on 4,018 real lines (above).</p></div>
       <div class="rstep now"><span class="status st-test">Next</span><h3>Draw our own lines</h3><p>Our sentences × 35 fonts × photo, scan and screenshot effects.</p></div>
-      <div class="rstep"><span class="status st-soon">Soon</span><h3>Train Chakkhu</h3><p>~15M hybrid model, a small test run first, then the full run.</p></div>
+      <div class="rstep"><span class="status st-soon">Soon</span><h3>Train Chakkhu</h3><p>18.6M model (code ready): the decoder learns Khmer text first, then a small test run, then the full run.</p></div>
       <div class="rstep"><span class="status st-soon">Soon</span><h3>Test &amp; release</h3><p>Released only if it beats the baseline: model on Hugging Face, web demo.</p></div>
       <div class="rstep"><span class="status st-soon">Later</span><h3>In the apps</h3><p>Find text lines in whole pages, then read them in the Akkhara apps on phone and computer.</p></div>
     </div>
