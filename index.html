@@ -449,19 +449,19 @@ pre.code code{white-space:pre}
 
 <section id="architecture">
   <div class="wrap">
-    <div class="eyebrow">Architecture · the plan</div>
+    <div class="eyebrow">Architecture · the model</div>
     <h2>A small model built for Khmer</h2>
     <p class="sub">Big AI chat models that "see" pictures make 33–89% mistakes on Khmer. Small, specialised readers win, so Chakkhu is one:
-      <b>18.6 million</b> parameters (about 19 MB on a phone), trained from scratch, the same size class as the Akkhara keyboard model. The model code is written and tested; training comes next.</p>
+      <b>18.6 million</b> parameters (about 19 MB on a phone), trained from scratch, the same size class as the Akkhara keyboard model. Click a figure to zoom.</p>
 
-    <a class="zoom" href="assets/architecture.png" data-alt="Chakkhu architecture: training plan, model, ONNX export and apps"><img class="figure" src="assets/architecture.png" alt="Chakkhu architecture: CNN eyes, Transformer encoder, CTC head and cluster decoder, runaway guard, beam search, ONNX export and apps" loading="lazy"></a>
+    <a class="zoom" href="assets/architecture.png" data-alt="Figure 1: Chakkhu architecture"><img class="figure" src="assets/architecture.png" alt="Figure 1. Chakkhu architecture: line picture, CNN with 7 residual blocks, Transformer encoder with 6 layers, CTC head and cluster decoder with 3 layers, joint loss" loading="lazy"></a>
 
     <div class="grid g2" style="margin-top:26px">
       <div class="card">
         <h3>Why this design</h3>
         <ul class="ticks">
           <li><b>Whole clusters, not letters.</b> <span class="km">ស្ត្រី</span> is one token (3,402 in total), so lines are 1.74× shorter and vowels drawn on the left need no reordering.</li>
-          <li><b>Knows Khmer before it reads.</b> The decoder first learns from 390k Khmer sentences, so blurry letters are guessed from the words around them.</li>
+          <li><b>Knows Khmer before it reads.</b> The decoder first learns from Khmer text alone, so blurry letters are guessed from the words around them.</li>
           <li><b>Keeps the height.</b> 64 px lines, 2 rows inside the model, so stacked letters above and below are not lost.</li>
           <li><b>Never invents text.</b> The CTC head counts the letters; if the decoder writes too much, its draft is used. Netra's run-aways were 17% of its errors.</li>
           <li><b>Trained on the hard cases</b>: short lines, English, night photos, Messenger images and chat screenshots.</li>
@@ -478,6 +478,8 @@ pre.code code{white-space:pre}
         </table>
       </div>
     </div>
+    <a class="zoom" href="assets/blocks.png" data-alt="Figure 2: inside the blocks"><img class="figure" style="margin-top:26px" src="assets/blocks.png" alt="Figure 2. Inside the blocks: CNN residual block with the 7-block table, Transformer encoder layer, decoder layer and the cluster tokenizer" loading="lazy"></a>
+    <a class="zoom" href="assets/training-reading.png" data-alt="Figure 3: how Chakkhu learns and reads"><img class="figure" style="margin-top:26px" src="assets/training-reading.png" alt="Figure 3. Training data with 9 picture styles and the training steps; reading with both heads and the runaway guard; confidence and the Chakkhu Lab page loop" loading="lazy"></a>
   </div>
 </section>
 
