@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chakkhu · Khmer OCR</title>
-<meta name="description" content="Chakkhu (ចក្ខុ, eye) is a small Khmer + English OCR model in development by Ing Muyleang: architecture plan, baseline report on the KHOB benchmark, data and roadmap.">
+<meta name="description" content="Chakkhu (ចក្ខុ, eye) is a small open Khmer + English OCR model by Ing Muyleang: 4.5% character errors on the KHOB benchmark, free demo and API.">
 <meta property="og:title" content="Chakkhu · Khmer OCR">
-<meta property="og:description" content="A small model that reads Khmer and English from photos, scans and screenshots. Coming soon.">
+<meta property="og:description" content="A small open model that reads Khmer and English from photos, scans, old documents and screenshots. Free demo and API.">
 <meta property="og:image" content="assets/logo.png">
 <link rel="icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -286,7 +286,7 @@ table.cmp tr.pick td{background:color-mix(in srgb,var(--green) 9%,transparent)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
 .sw.s1{background:var(--s1)} .sw.s2{background:var(--s2)}
-.sw.s3{border:1.5px dashed var(--muted)}
+.sw.s3{background:#10b981}
 .chart{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:4px 14px;align-items:center}
 .chart .lab{font-size:13.5px;color:var(--ink2);line-height:1.25}
 .chart .lab small{display:block;color:var(--muted);font-size:12px}
@@ -295,7 +295,8 @@ table.cmp tr.pick td{background:color-mix(in srgb,var(--green) 9%,transparent)}
 .bar{position:relative;height:14px;display:flex;align-items:center}
 .bar i{display:block;height:100%;border-radius:0 4px 4px 0;min-width:2px}
 .bar.s1 i{background:var(--s1)} .bar.s2 i{background:var(--s2)}
-.bar.s3 i{border:1.5px dashed var(--muted);border-left:none;background:none;width:34px;border-radius:0 4px 4px 0}
+.bar.s3 i{background:#10b981}
+.bar.s3 em{font-weight:700}
 .bar em{font-style:normal;font-size:12px;color:var(--ink2);margin-left:6px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .bar:hover i{filter:brightness(1.12)}
 .axis{grid-column:2;display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding-top:2px}
@@ -328,6 +329,9 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
   .chart .lab small{display:none}
   .photo-text{font-size:21px}
 }
+pre.code{margin:10px 0 0;padding:12px 14px;border-radius:12px;background:var(--surface-2,rgba(127,127,127,.1));overflow-x:auto;font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;max-width:100%}
+pre.code code{white-space:pre}
+.grid>*{min-width:0}   /* long code lines scroll inside their card instead of widening the page */
 </style>
 </head>
 <body>
@@ -402,13 +406,14 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
 <header class="hero" id="top">
   <div class="wrap">
     <div>
-      <span class="pill soon">● In development · model coming soon</span>
+      <span class="pill">● Released · open model + free API</span>
       <h1>Point at Khmer.<br>Get the <span class="km">អក្សរ</span>.</h1>
-      <p class="lead">Chakkhu (<span class="km">ចក្ខុ</span>, "eye") will read Khmer and English from photos, scans, screenshots and
-        chat images, and turn them into text you can copy. Small enough to run on your phone, without internet.</p>
+      <p class="lead">Chakkhu (<span class="km">ចក្ខុ</span>, "eye") reads Khmer and English from photos, scans, old documents,
+        screenshots and chat images, and turns them into text you can copy. Small (18.6M), runs on a normal computer, and
+        tells you which lines it is unsure about.</p>
       <div class="cta">
-        <a class="btn btn-primary" href="#architecture"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>See the plan</a>
-        <a class="btn btn-ghost" href="#report"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Baseline report</a>
+        <a class="btn btn-primary" href="https://huggingface.co/spaces/INGMUYLEANG/chakkhu-demo" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>Try the demo</a>
+        <a class="btn btn-ghost" href="#report"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>See the results</a>
       </div>
       <div class="trust">
         <span>From the maker of <a href="https://muyleanging.github.io/akkhara-web/" target="_blank" rel="noopener"><b>Akkhara</b></a>: Akkhara types the letters, Chakkhu reads them.</span>
@@ -421,7 +426,7 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
       <div class="photo"><div class="scan" aria-hidden="true"></div><div class="photo-text km" id="photoText"></div></div>
       <div class="demo-label" style="margin-top:16px">Chakkhu reads</div>
       <div class="out km" id="ocrOut"></div>
-      <div class="hint">Preview animation: the model is not trained yet</div>
+      <div class="hint">Preview animation · try the real model in the demo</div>
     </div>
   </div>
 </header>
@@ -478,36 +483,45 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
 
 <section id="report" class="alt">
   <div class="wrap">
-    <div class="eyebrow">Report · baseline</div>
-    <h2>The score to beat</h2>
-    <p class="sub">Before training anything, we tested the best free Khmer OCR tools on <b>KHOB</b>, a public benchmark of real
-      government letters and street photos (<span id="nLines">4,018</span> text lines). Chakkhu has to beat these numbers to be released.</p>
+    <div class="eyebrow">Report · results</div>
+    <h2>Chakkhu vs the best free tools</h2>
+    <p class="sub">All tools tested on <b>KHOB</b>, a public benchmark of real government letters and street photos
+      (<span id="nLines">4,018</span> text lines, never used for training). Chakkhu makes the fewest mistakes.</p>
 
     <div class="card"><div class="stats">
-      <div class="stat"><b id="s-netra">–</b><span>Netra-OCR errors (best free tool)</span></div>
+      <div class="stat"><b id="s-chakkhu">–</b><span>Chakkhu errors</span></div>
+      <div class="stat"><b id="s-netra">–</b><span>Netra-OCR errors</span></div>
       <div class="stat"><b id="s-tess">–</b><span>Tesseract errors</span></div>
-      <div class="stat"><b id="s-exact">–</b><span>lines Netra gets fully right</span></div>
-      <div class="stat"><b class="muted">soon</b><span>Chakkhu</span></div>
+      <div class="stat"><b id="s-exact">–</b><span>lines Chakkhu gets fully right</span></div>
     </div></div>
 
     <div class="card chart-card" style="margin-top:18px">
       <div class="chart-head">
         <h3>Character error rate by kind of picture <small>(lower is better)</small></h3>
-        <div class="legend"><span><i class="sw s1"></i>Netra-OCR</span><span><i class="sw s2"></i>Tesseract 5</span><span><i class="sw s3"></i>Chakkhu (coming)</span></div>
+        <div class="legend"><span><i class="sw s3"></i>Chakkhu</span><span><i class="sw s1"></i>Netra-OCR</span><span><i class="sw s2"></i>Tesseract 5</span></div>
       </div>
       <div id="chart" class="chart" role="img" aria-label="Bar chart of character error rate per test, see the table below"></div>
       <details class="tbl"><summary>Show as a table</summary><div id="table"></div></details>
     </div>
 
     <div class="grid g3" style="margin-top:18px">
-      <div class="card"><h3>What we learned</h3><p id="learn1">Half of all lines come out perfect. Netra's mistakes pile up on <b>short lines</b> like signs and titles (14% errors), <b>English-only</b> lines (23%), <b>night photos</b> (11%), and 13 lines where it "runs away" and invents text (17% of all its errors). That is where Chakkhu can win.</p></div>
+      <div class="card"><h3>Where Chakkhu wins</h3><p id="learn1">Documents: about <b>half the mistakes</b> of Netra on clean, Messenger, scanned and phone-scanned pages, and
+        <b>2.6× fewer</b> on short lines like signs and titles (8.7% vs 22.4%). On old 1990s–2000s government decrees: <b>2.1%</b> errors.
+        Still behind: street photos (6.4% vs 5.8%, night 11.2% vs 10.6%) and English-only lines.</p></div>
       <div class="card"><h3>We fixed the test first</h3><p>In KHOB, the scanned and Messenger pages reuse the boxes of the clean PDF, so many boxes missed the text. We line up each scan with its clean page before cutting lines, and drop 2 pages whose pictures show a different letter.</p></div>
-      <div class="card"><h3>How we score</h3><p><b>CER</b> = wrong, missing or extra characters ÷ characters in the right answer. Spaces are made consistent first.
+      <div class="card"><h3>How we score</h3><p><b>CER</b> = wrong, missing or extra characters ÷ characters in the right answer. Spaces and Khmer letter order are made consistent first (the same rules for every tool).
         Every labelled line is used (Netra's own 0.96% is on a 325-line selection). Same lines and rules for every tool; Chakkhu never trains on them.</p></div>
+      <div class="card"><h3>Use it</h3><p>Open model (Apache-2.0): <a href="https://huggingface.co/INGMUYLEANG/chakkhu-ocr" target="_blank" rel="noopener">INGMUYLEANG/chakkhu-ocr</a>.
+        Free demo and API: <a href="https://huggingface.co/spaces/INGMUYLEANG/chakkhu-demo" target="_blank" rel="noopener">chakkhu-demo</a>.</p>
+        <pre class="code"><code>from gradio_client import Client, handle_file
+c = Client("INGMUYLEANG/chakkhu-demo")
+c.predict(handle_file("page.jpg"), "page",
+          api_name="/read")
+# → text + confidence + box per line</code></pre></div>
     </div>
     <p class="meta" style="margin-top:14px">Tools: <a href="https://huggingface.co/Netra-Lab/Netra-OCR" target="_blank" rel="noopener">Netra-OCR</a> recognizer (19M, MIT) ·
       <a href="https://github.com/tesseract-ocr/tessdata_best" target="_blank" rel="noopener">Tesseract 5</a> with the best Khmer + English models, one-line mode.
-      Benchmark: <a href="https://github.com/EKYCSolutions/khmer-ocr-benchmark-dataset" target="_blank" rel="noopener">KHOB</a> (MIT). Tested on <span id="testDate">9 Nov 2026</span>, on CPU.</p>
+      Benchmark: <a href="https://github.com/EKYCSolutions/khmer-ocr-benchmark-dataset" target="_blank" rel="noopener">KHOB</a> (MIT). Tested on <span id="testDate">10 Nov 2026</span>.</p>
   </div>
 </section>
 
@@ -520,12 +534,13 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
       <div class="card">
         <h3>Training</h3>
         <table class="cmp data">
-          <tr><td><b>Our own lines</b><small>390k clean Khmer sentences drawn with 35 open fonts, blur, noise, tilt, paper and screenshot styles</small></td><td>own</td></tr>
+          <tr><td><b>Our own lines</b><small>400k Khmer sentences drawn with 35 open fonts in 9 styles: document, scan, photo, night, screenshot, tiny print, old print, typewriter …</small></td><td>own</td></tr>
           <tr><td><b>Chanrith Khmer–English lines</b><small>synthetic, 1M-line slice</small></td><td>CC BY 4.0</td></tr>
           <tr><td><b>SoyVitou printed (62k + per-font)</b><small>printed Khmer + English</small></td><td>MIT</td></tr>
           <tr><td><b>Sokheng synthetic 100k</b><small>receipts, menus, price tags, signs</small></td><td>CC BY 4.0</td></tr>
           <tr><td><b>Thareah handwriting</b><small>real handwritten lines</small></td><td>MIT</td></tr>
-          <tr><td><b>krotreaksmey text lines</b></td><td>MIT</td></tr>
+          <tr><td><b>Cambodian laws &amp; royal decrees</b><small>89 scanned pages, 1993–2003 (Open Development Cambodia); not protected: copyright law 2003, Art. 10</small></td><td>free</td></tr>
+          <tr><td><b>Khmer Wikipedia</b><small>158k sentences, drawn as lines</small></td><td>CC BY-SA 4.0</td></tr>
           <tr><td><b>35 Khmer fonts</b><small>Battambang, Hanuman, Moul, Noto Sans Khmer, Kantumruy Pro …</small></td><td>OFL 1.1</td></tr>
         </table>
       </div>
@@ -534,7 +549,7 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
         <table class="cmp data">
           <tr><td><b>KHOB</b><small>real government letters: PDF, Messenger, scanned, phone-scanned; street photos by day and night</small></td><td>MIT</td></tr>
           <tr><td><b>Netra printed words</b></td><td>MIT</td></tr>
-          <tr><td><b>Chat screenshots</b><small>our own set, mixed Khmer + English (to collect)</small></td><td>own</td></tr>
+          <tr><td><b>12 decree pages</b><small>held out from the 1990s–2000s set, never trained on</small></td><td>free</td></tr>
         </table>
         <h3 style="margin-top:22px">Left out</h3>
         <p>KhmerSynthetic1M (research only) · WildKhmerST (non-commercial, no derivatives) · khmer-sala-ocr-16k (non-commercial) · sets with no license.</p>
@@ -552,9 +567,10 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
       <div class="rstep done"><span class="status st-ok">Done</span><h3>Collect data &amp; fonts</h3><p>6 open training sets, 35 fonts, the KHOB benchmark; licenses checked.</p></div>
       <div class="rstep done"><span class="status st-ok">Done</span><h3>Model code + tokenizer</h3><p>Cluster tokenizer (3,402 tokens) and the 18.6M model, tested: 13 ms per line on a laptop CPU.</p></div>
       <div class="rstep done"><span class="status st-ok">Done</span><h3>Baseline report</h3><p>Netra-OCR and Tesseract scored on 4,018 real lines (above).</p></div>
-      <div class="rstep now"><span class="status st-test">Next</span><h3>Draw our own lines</h3><p>Our sentences × 35 fonts × photo, scan and screenshot effects.</p></div>
-      <div class="rstep"><span class="status st-soon">Soon</span><h3>Train Chakkhu</h3><p>18.6M model (code ready): the decoder learns Khmer text first, then a small test run, then the full run.</p></div>
-      <div class="rstep"><span class="status st-soon">Soon</span><h3>Test &amp; release</h3><p>Released only if it beats the baseline: model on Hugging Face, web demo.</p></div>
+      <div class="rstep done"><span class="status st-ok">Done</span><h3>Draw our own lines</h3><p>Our sentences × 35 fonts × 9 picture styles, incl. old print and typewriter.</p></div>
+      <div class="rstep done"><span class="status st-ok">Done</span><h3>Train Chakkhu</h3><p>4 hours from scratch, then 1 hour more with real 1990s decree pages and handwriting.</p></div>
+      <div class="rstep done"><span class="status st-ok">Done</span><h3>Test &amp; release</h3><p>Beats the baseline: 4.50% vs 5.87%. Open model, demo and free API on Hugging Face.</p></div>
+      <div class="rstep now"><span class="status st-test">Next</span><h3>Self-check &amp; street photos</h3><p>Use the confidence to check only unsure lines; more street-sign and English training.</p></div>
       <div class="rstep"><span class="status st-soon">Later</span><h3>In the apps</h3><p>Find text lines in whole pages, then read them in the Akkhara apps on phone and computer.</p></div>
     </div>
   </div>
@@ -633,7 +649,7 @@ details.tbl th:first-child,details.tbl td:first-child{text-align:left}
   })();
 })();
 
-// ---- baseline report (numbers from scripts/baseline.py on KHOB, 9 Nov 2026) -------------------
+// ---- report (KHOB, all lines; Chakkhu = full2 reading with both heads, 10 Nov 2026) -------------
 const TESTS=[
   {key:'level-1-task-1', name:'Clean PDF',           note:'government letters'},
   {key:'level-1-task-2', name:'Messenger image',     note:'compressed'},
@@ -643,31 +659,32 @@ const TESTS=[
   {key:'level-2-task-2', name:'Street photo, night', note:'low light'},
   {key:'ALL',            name:'All lines',           note:''},
 ];
-const RESULTS={"netra":{"level-1-task-1":{"lines":459,"cer":5.35,"exact":43.8},"ALL":{"lines":4018,"cer":6.11,"exact":54.7},"level-1-task-2":{"lines":408,"cer":6.44,"exact":39.5},"level-1-task-3":{"lines":466,"cer":4.89,"exact":41.2},"level-1-task-4":{"lines":470,"cer":4.45,"exact":37.4},"level-2-task-1":{"lines":1332,"cer":5.86,"exact":65.2},"level-2-task-2":{"lines":883,"cer":10.69,"exact":67.7}},"tesseract":{"level-1-task-1":{"lines":459,"cer":13.11,"exact":12.4},"ALL":{"lines":4018,"cer":20.74,"exact":16.2},"level-1-task-2":{"lines":408,"cer":14.19,"exact":11.5},"level-1-task-3":{"lines":466,"cer":14.05,"exact":6.7},"level-1-task-4":{"lines":470,"cer":19.34,"exact":4.0},"level-2-task-1":{"lines":1332,"cer":31.84,"exact":23.8},"level-2-task-2":{"lines":883,"cer":35.3,"exact":20.5}}};
+const RESULTS={"netra":{"level-1-task-1":{"lines":459,"cer":5.02,"exact":48.8},"ALL":{"lines":4018,"cer":5.87,"exact":56.9},"level-1-task-2":{"lines":408,"cer":6.16,"exact":43.6},"level-1-task-3":{"lines":466,"cer":4.55,"exact":45.3},"level-1-task-4":{"lines":470,"cer":4.13,"exact":41.7},"level-2-task-1":{"lines":1332,"cer":5.78,"exact":65.8},"level-2-task-2":{"lines":883,"cer":10.64,"exact":68.1}},"tesseract":{"level-1-task-1":{"lines":459,"cer":12.82,"exact":13.7},"ALL":{"lines":4018,"cer":20.55,"exact":16.5},"level-1-task-2":{"lines":408,"cer":13.97,"exact":12.3},"level-1-task-3":{"lines":466,"cer":13.81,"exact":6.9},"level-1-task-4":{"lines":470,"cer":19.06,"exact":4.3},"level-2-task-1":{"lines":1332,"cer":31.83,"exact":23.8},"level-2-task-2":{"lines":883,"cer":35.28,"exact":20.6}},"chakkhu":{"level-2-task-1":{"lines":1332,"cer":6.41,"exact":66.5},"ALL":{"lines":4018,"cer":4.5,"exact":58.8},"level-2-task-2":{"lines":883,"cer":11.17,"exact":67.2},"level-1-task-4":{"lines":470,"cer":3.27,"exact":46.4},"level-1-task-1":{"lines":459,"cer":2.26,"exact":52.1},"level-1-task-3":{"lines":466,"cer":2.43,"exact":50.0},"level-1-task-2":{"lines":408,"cer":2.85,"exact":47.8}}};
 
 (function(){
   const fmt=v=>v.toFixed(1)+'%';
-  const all=RESULTS.netra.ALL, tess=RESULTS.tesseract.ALL;
+  const all=RESULTS.netra.ALL, tess=RESULTS.tesseract.ALL, ch=RESULTS.chakkhu.ALL;
+  document.getElementById('s-chakkhu').textContent=fmt(ch.cer);
   document.getElementById('s-netra').textContent=fmt(all.cer);
   document.getElementById('s-tess').textContent=fmt(tess.cer);
-  document.getElementById('s-exact').textContent=Math.round(all.exact)+'%';
+  document.getElementById('s-exact').textContent=Math.round(ch.exact)+'%';
   document.getElementById('nLines').textContent=all.lines.toLocaleString('en');
 
-  const max=Math.ceil(Math.max(...TESTS.flatMap(t=>[RESULTS.netra[t.key].cer,RESULTS.tesseract[t.key].cer]))/10)*10;
+  const max=Math.ceil(Math.max(...TESTS.flatMap(t=>[RESULTS.netra[t.key].cer,RESULTS.tesseract[t.key].cer,RESULTS.chakkhu[t.key].cer]))/10)*10;
   const bar=(cls,v,label)=>`<div class="bar ${cls}" title="${label}: ${fmt(v)} character errors"><i style="width:${100*v/max}%"></i><em>${fmt(v)}</em></div>`;
   let html='';
   for(const t of TESTS){
     const n=RESULTS.netra[t.key], s=RESULTS.tesseract[t.key];
     html+=`<div class="lab${t.key==='ALL'?' all':''}">${t.name}${t.note?`<small>${t.note} · ${n.lines} lines</small>`:`<small>${n.lines.toLocaleString('en')} lines</small>`}</div>`+
-      `<div class="bars">${bar('s1',n.cer,'Netra-OCR')}${bar('s2',s.cer,'Tesseract 5')}<div class="bar s3" title="Chakkhu: coming soon"><i></i><em>soon</em></div></div>`;
+      `<div class="bars">${bar('s3',RESULTS.chakkhu[t.key].cer,'Chakkhu')}${bar('s1',n.cer,'Netra-OCR')}${bar('s2',s.cer,'Tesseract 5')}</div>`;
   }
   html+=`<div class="axis"><span>0%</span><span>${max/2}%</span><span>${max}% errors</span></div>`;
   document.getElementById('chart').innerHTML=html;
 
-  let tb='<div class="tbl-wrap"><table><tr><th>Test</th><th>Lines</th><th>Netra CER</th><th>Netra exact</th><th>Tesseract CER</th><th>Tesseract exact</th><th>Chakkhu</th></tr>';
+  let tb='<div class="tbl-wrap"><table><tr><th>Test</th><th>Lines</th><th>Netra CER</th><th>Netra exact</th><th>Tesseract CER</th><th>Tesseract exact</th><th>Chakkhu CER</th><th>Chakkhu exact</th></tr>';
   for(const t of TESTS){
     const n=RESULTS.netra[t.key], s=RESULTS.tesseract[t.key];
-    tb+=`<tr><td>${t.name}</td><td>${n.lines}</td><td>${fmt(n.cer)}</td><td>${Math.round(n.exact)}%</td><td>${fmt(s.cer)}</td><td>${Math.round(s.exact)}%</td><td>soon</td></tr>`;
+    tb+=`<tr><td>${t.name}</td><td>${n.lines}</td><td>${fmt(n.cer)}</td><td>${Math.round(n.exact)}%</td><td>${fmt(s.cer)}</td><td>${Math.round(s.exact)}%</td><td><b>${fmt(RESULTS.chakkhu[t.key].cer)}</b></td><td><b>${Math.round(RESULTS.chakkhu[t.key].exact)}%</b></td></tr>`;
   }
   document.getElementById('table').innerHTML=tb+'</table></div>';
 })();
