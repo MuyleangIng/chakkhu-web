@@ -391,7 +391,7 @@ pre.code code{white-space:pre}
   <a href="#roadmap"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg>Roadmap</a>
   <div class="grp">Online</div>
   <a href="https://muyleanging.github.io/akkhara-web/" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-keyboard"/></svg>Akkhara keyboard<svg class="ic" aria-hidden="true"><use href="#i-external-link"/></svg></a>
-  <a href="https://huggingface.co/INGMUYLEANG" target="_blank" rel="noopener"><svg class="ic ib" aria-hidden="true"><use href="#b-huggingface"/></svg>Hugging Face<svg class="ic" aria-hidden="true"><use href="#i-external-link"/></svg></a>
+  <a href="https://huggingface.co/muyleanging" target="_blank" rel="noopener"><svg class="ic ib" aria-hidden="true"><use href="#b-huggingface"/></svg>Hugging Face<svg class="ic" aria-hidden="true"><use href="#i-external-link"/></svg></a>
   <a href="https://github.com/MuyleangIng" target="_blank" rel="noopener"><svg class="ic ib" aria-hidden="true"><use href="#b-github"/></svg>GitHub<svg class="ic" aria-hidden="true"><use href="#i-external-link"/></svg></a>
 </div>
 
@@ -412,7 +412,7 @@ pre.code code{white-space:pre}
         screenshots and chat images, and turns them into text you can copy. Small (18.6M), runs on a normal computer, and
         tells you which lines it is unsure about.</p>
       <div class="cta">
-        <a class="btn btn-primary" href="https://huggingface.co/spaces/INGMUYLEANG/Chakkhu-OCR-Demo" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>Try the demo</a>
+        <a class="btn btn-primary" href="https://huggingface.co/spaces/muyleanging/Chakkhu-OCR-Demo" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>Try the demo</a>
         <a class="btn btn-ghost" href="#report"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>See the results</a>
       </div>
       <div class="trust">
@@ -513,10 +513,11 @@ pre.code code{white-space:pre}
       <div class="card"><h3>We fixed the test first</h3><p>In KHOB, the scanned and Messenger pages reuse the boxes of the clean PDF, so many boxes missed the text. We line up each scan with its clean page before cutting lines, and drop 2 pages whose pictures show a different letter.</p></div>
       <div class="card"><h3>How we score</h3><p><b>CER</b> = wrong, missing or extra characters ÷ characters in the right answer. Spaces and Khmer letter order are made consistent first (the same rules for every tool).
         Every labelled line is used (Netra's own 0.96% is on a 325-line selection). Same lines and rules for every tool; Chakkhu never trains on them.</p></div>
-      <div class="card"><h3>Use it</h3><p>Open model (Apache-2.0): <a href="https://huggingface.co/INGMUYLEANG/Chakkhu-OCR-Khmer" target="_blank" rel="noopener">INGMUYLEANG/Chakkhu-OCR-Khmer</a>.
-        Free demo and API: <a href="https://huggingface.co/spaces/INGMUYLEANG/Chakkhu-OCR-Demo" target="_blank" rel="noopener">Chakkhu-OCR-Demo</a>.</p>
+      <div class="card"><h3>Use it</h3><p>Open model (Apache-2.0): <a href="https://huggingface.co/muyleanging/Chakkhu-OCR-Khmer" target="_blank" rel="noopener">muyleanging/Chakkhu-OCR-Khmer</a>.
+        No PyTorch (int8, 39 MB, same accuracy): <a href="https://huggingface.co/muyleanging/Chakkhu-OCR-Khmer-ONNX" target="_blank" rel="noopener">Chakkhu-OCR-Khmer-ONNX</a>.
+        Free demo and API: <a href="https://huggingface.co/spaces/muyleanging/Chakkhu-OCR-Demo" target="_blank" rel="noopener">Chakkhu-OCR-Demo</a>.</p>
         <pre class="code"><code>from gradio_client import Client, handle_file
-c = Client("INGMUYLEANG/Chakkhu-OCR-Demo")
+c = Client("muyleanging/Chakkhu-OCR-Demo")
 c.predict(handle_file("page.jpg"), "page",
           api_name="/read")
 # → text + confidence + box per line</code></pre></div>
@@ -605,7 +606,7 @@ c.predict(handle_file("page.jpg"), "page",
 <footer>
   <div class="wrap">
     <div>© 2026 Ing Muyleang · Chakkhu <span class="km">ចក្ខុ</span></div>
-    <div><a href="https://muyleanging.github.io/akkhara-web/">Akkhara</a> · <a href="https://muyleanging.github.io/voxpocket-web/">VoxPocket</a> · <a href="https://muyleanging.github.io/sota-web/">Sota</a> · <a href="https://github.com/MuyleangIng">GitHub</a> · <a href="https://huggingface.co/INGMUYLEANG">Hugging Face</a></div>
+    <div><a href="https://muyleanging.github.io/akkhara-web/">Akkhara</a> · <a href="https://muyleanging.github.io/voxpocket-web/">VoxPocket</a> · <a href="https://muyleanging.github.io/sota-web/">Sota</a> · <a href="https://github.com/MuyleangIng">GitHub</a> · <a href="https://huggingface.co/muyleanging">Hugging Face</a></div>
   </div>
 </footer>
 
