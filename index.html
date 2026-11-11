@@ -412,7 +412,7 @@ pre.code code{white-space:pre}
         screenshots and chat images, and turns them into text you can copy. Small (18.6M), runs on a normal computer, and
         tells you which lines it is unsure about.</p>
       <div class="cta">
-        <a class="btn btn-primary" href="https://huggingface.co/spaces/INGMUYLEANG/chakkhu-demo" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>Try the demo</a>
+        <a class="btn btn-primary" href="https://huggingface.co/spaces/INGMUYLEANG/Chakkhu-OCR-Demo" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>Try the demo</a>
         <a class="btn btn-ghost" href="#report"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>See the results</a>
       </div>
       <div class="trust">
@@ -513,10 +513,10 @@ pre.code code{white-space:pre}
       <div class="card"><h3>We fixed the test first</h3><p>In KHOB, the scanned and Messenger pages reuse the boxes of the clean PDF, so many boxes missed the text. We line up each scan with its clean page before cutting lines, and drop 2 pages whose pictures show a different letter.</p></div>
       <div class="card"><h3>How we score</h3><p><b>CER</b> = wrong, missing or extra characters ÷ characters in the right answer. Spaces and Khmer letter order are made consistent first (the same rules for every tool).
         Every labelled line is used (Netra's own 0.96% is on a 325-line selection). Same lines and rules for every tool; Chakkhu never trains on them.</p></div>
-      <div class="card"><h3>Use it</h3><p>Open model (Apache-2.0): <a href="https://huggingface.co/INGMUYLEANG/chakkhu-ocr" target="_blank" rel="noopener">INGMUYLEANG/chakkhu-ocr</a>.
-        Free demo and API: <a href="https://huggingface.co/spaces/INGMUYLEANG/chakkhu-demo" target="_blank" rel="noopener">chakkhu-demo</a>.</p>
+      <div class="card"><h3>Use it</h3><p>Open model (Apache-2.0): <a href="https://huggingface.co/INGMUYLEANG/Chakkhu-OCR-Khmer" target="_blank" rel="noopener">INGMUYLEANG/Chakkhu-OCR-Khmer</a>.
+        Free demo and API: <a href="https://huggingface.co/spaces/INGMUYLEANG/Chakkhu-OCR-Demo" target="_blank" rel="noopener">Chakkhu-OCR-Demo</a>.</p>
         <pre class="code"><code>from gradio_client import Client, handle_file
-c = Client("INGMUYLEANG/chakkhu-demo")
+c = Client("INGMUYLEANG/Chakkhu-OCR-Demo")
 c.predict(handle_file("page.jpg"), "page",
           api_name="/read")
 # → text + confidence + box per line</code></pre></div>
