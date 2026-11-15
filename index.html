@@ -353,6 +353,43 @@ pre.code code{white-space:pre}
 .usegrid{grid-template-columns:1fr !important}
 .codebox pre.dark{overflow-x:auto;white-space:pre;padding-right:110px}
 @media (max-width:640px){.codebox pre.dark{padding-right:12px}}
+
+/* ---- "Watch Chakkhu read a picture": letters fly from the picture into the text (fixed heights: no jumping) ---- */
+.rd{padding:22px;overflow:hidden}
+.rd-stage{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr);gap:14px;align-items:stretch}
+.rd-pane{display:flex;flex-direction:column;gap:10px;min-width:0}
+.rd-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;height:22px}
+.rd-step{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
+.rd-src{font-size:12px;color:var(--muted);white-space:nowrap}
+.rd-pic{position:relative;height:150px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center}
+.rd-pic img{width:calc(100% - 28px);height:auto;max-height:126px;border-radius:6px;transition:opacity .35s}
+.rd-box{position:absolute;border:2px solid var(--green);border-radius:6px;background:color-mix(in srgb,var(--green) 10%,transparent);opacity:0;transition:opacity .3s}
+.rd-box.on{opacity:1}
+.rd-beam{position:absolute;top:0;bottom:0;width:60px;left:-70px;opacity:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--blue2) 50%,transparent),transparent)}
+.rd-status{height:20px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rd-arrow{display:grid;place-items:center;color:var(--blue2)}
+.rd-arrow .ic{width:28px;height:28px}
+.rd-out{height:150px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:14px 16px;font-size:26px;line-height:1.55;overflow:hidden;
+  display:flex;flex-wrap:wrap;align-content:center;color:var(--ink)}
+.rd-out span{opacity:0;white-space:pre}
+.rd-out span.in{opacity:1}
+.rd-out span.caret{opacity:1;width:2px;height:1.2em;background:var(--blue);margin-left:2px;align-self:center;animation:rdBlink 1s steps(1) infinite}
+@keyframes rdBlink{50%{opacity:0}}
+.rd-conf{height:20px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.rd-meter{flex:1;height:8px;border-radius:99px;background:var(--bg2);border:1px solid var(--line);overflow:hidden}
+.rd-meter i{display:block;height:100%;width:0;background:var(--green);border-radius:99px;transition:width .7s ease-out}
+.rd-conf b{width:44px;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.rd-fly{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.rd-fly span{position:absolute;left:0;top:0;font-family:"Kantumruy Pro",sans-serif;color:var(--blue);font-weight:600;white-space:pre;will-change:transform,opacity}
+.rd-col{position:absolute;border:1.5px solid var(--blue2);border-radius:3px;background:color-mix(in srgb,var(--blue2) 18%,transparent);pointer-events:none}
+.rd-cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.rd-note{font-size:13px;color:var(--muted);flex:1;min-width:220px}
+@media (max-width:760px){
+  .rd-stage{grid-template-columns:minmax(0,1fr)}
+  .rd-arrow{height:28px} .rd-arrow .ic{transform:rotate(90deg)}
+  .rd-pic,.rd-out{height:120px} .rd-pic img{max-height:100px}
+  .rd-out{font-size:21px}
+}
 </style>
 </head>
 <body>
@@ -388,6 +425,7 @@ pre.code code{white-space:pre}
 <symbol id="i-quote" viewBox="0 0 24 24"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" /> <path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" /></symbol>
 <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6" /> <path d="m8 6-6 6 6 6" /></symbol>
 <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" /> <line x1="4" x2="4" y1="22" y2="15" /></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
 <symbol id="i-arrow-left-right" viewBox="0 0 24 24"><path d="M8 3 4 7l4 4" /> <path d="M4 7h16" /> <path d="m16 21 4-4-4-4" /> <path d="M20 17H4" /></symbol>
 </svg>
 
@@ -396,6 +434,7 @@ pre.code code{white-space:pre}
     <a class="brand" href="#top"><img src="assets/logo.png" alt="">Chakkhu <span class="km" style="font-weight:600;color:var(--muted);font-size:16px">ចក្ខុ</span></a>
     <div class="navlinks">
       <a href="#top"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg><span>Home</span></a>
+      <a href="#try"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg><span>Try it</span></a>
       <a href="#why"><svg class="ic" aria-hidden="true"><use href="#i-languages"/></svg><span class="lbl-x">Why</span></a>
       <a href="#architecture"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg><span>Architecture</span></a>
       <a href="#report"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><span>Report</span></a>
@@ -412,6 +451,7 @@ pre.code code{white-space:pre}
 <div id="mobileMenu" class="glass" role="menu">
   <div class="grp">On this page</div>
   <a href="#top"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg>Home</a>
+  <a href="#try"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg>Try it<small>watch it read, then the demo</small></a>
   <a href="#why"><svg class="ic" aria-hidden="true"><use href="#i-languages"/></svg>Why Khmer OCR is hard</a>
   <a href="#architecture"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>Architecture<small>the plan</small></a>
   <a href="#report"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg>Baseline report</a>
@@ -460,6 +500,40 @@ pre.code code{white-space:pre}
     </div>
   </div>
 </header>
+
+<section id="try">
+  <div class="wrap">
+    <div class="eyebrow">Try it</div>
+    <h2>Watch Chakkhu read a picture</h2>
+    <p class="sub">Real pictures from the KHOB benchmark and Chakkhu's real answers: it finds the text line, reads every
+      Khmer letter cluster, and says how sure it is. Then try it on your own picture.</p>
+
+    <div class="card rd" aria-label="Animation: Chakkhu reads a picture">
+      <div class="rd-stage" id="rdStage">
+        <div class="rd-pane">
+          <div class="rd-head"><span class="rd-step" id="rdKind">Street sign</span><span class="rd-src">picture</span></div>
+          <div class="rd-pic" id="rdPic">
+            <img id="rdImg" src="assets/demo/street.png" alt="">
+            <div class="rd-box" id="rdBox"></div>
+            <div class="rd-beam" id="rdBeam" aria-hidden="true"></div>
+          </div>
+          <div class="rd-status" id="rdStatus">Finding the text line…</div>
+        </div>
+        <div class="rd-arrow" aria-hidden="true"><svg class="ic"><use href="#i-arrow-right"/></svg></div>
+        <div class="rd-pane">
+          <div class="rd-head"><span class="rd-step">Chakkhu reads</span><span class="rd-src">text you can copy</span></div>
+          <div class="rd-out km" id="rdOut" aria-live="off"></div>
+          <div class="rd-conf"><span>confidence</span><div class="rd-meter"><i id="rdMeter"></i></div><b id="rdConf">–</b></div>
+        </div>
+        <div class="rd-fly" id="rdFly" aria-hidden="true"></div>
+      </div>
+      <div class="rd-cta">
+        <a class="btn btn-primary" href="https://huggingface.co/spaces/muyleanging/Chakkhu-OCR-Demo" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg>Try it with your own picture</a>
+        <span class="rd-note">Opens the free demo on Hugging Face · choose <b>PyTorch</b> (best quality) or <b>ONNX</b> (small, for CPU) · one line or a whole page</span>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="why" class="alt">
   <div class="wrap">
@@ -761,6 +835,104 @@ for line in r["lines"]:   # text, confidence, box
       await sleep(2200);
     }
   })();
+})();
+
+// ---- "Watch Chakkhu read a picture": real KHOB crops + Chakkhu full3's real answers ----------------
+// box = where the line finder put the text, in the picture's own pixels (x, y, w, h)
+(function(){
+  const EX=[
+    {img:'assets/demo/street.png', w:1107, h:232, box:[15,25,1058,207], kind:'Street sign · daylight photo',
+     text:'នៅពេល បច្ចុប្បន្ន ប៉ុណ្ណោះ', conf:0.987},
+    {img:'assets/demo/clean.png', w:151, h:22, box:[4,1,140,19], kind:'Government letter · PDF',
+     text:'ច្បាប់ស្តីពីប្រព័ន្ធហិរញ្ញវត្ថុសាធារណៈ', conf:0.988},
+    {img:'assets/demo/phone_scan.png', w:130, h:19, box:[0,0,130,19], kind:'Letter scanned with a phone',
+     text:'ក្រុមប្រឹក្សាស្រុក ក្រុមប្រឹក្សាខណ្ឌ', conf:0.990},
+  ];
+  const $=id=>document.getElementById(id);
+  const stage=$('rdStage'); if(!stage) return;
+  const img=$('rdImg'), box=$('rdBox'), beam=$('rdBeam'), out=$('rdOut'), fly=$('rdFly');
+  const status=$('rdStatus'), kind=$('rdKind'), meter=$('rdMeter'), conf=$('rdConf');
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const seg=('Segmenter' in Intl)? new Intl.Segmenter('km',{granularity:'grapheme'}) : null;
+  const parts=s=>seg? [...seg.segment(s)].map(x=>x.segment) : [...s];
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rel=el=>{const a=el.getBoundingClientRect(), s=stage.getBoundingClientRect(); return {x:a.left-s.left,y:a.top-s.top,w:a.width,h:a.height};};
+
+  function load(ex){
+    return new Promise(res=>{ if(img.getAttribute('src')===ex.img && img.complete) return res();
+      img.onload=()=>res(); img.onerror=()=>res(); img.src=ex.img; });
+  }
+  function textArea(ex){   // the line finder's box, placed on the picture as it is drawn on screen
+    const r=rel(img), p=rel(img.parentElement), sx=r.w/ex.w, sy=r.h/ex.h, [bx,by,bw,bh]=ex.box;
+    return {x:r.x+bx*sx, y:r.y+by*sy, w:bw*sx, h:bh*sy, px:r.x-p.x, py:r.y-p.y, sx, sy};
+  }
+  function prepare(ex){
+    out.replaceChildren(); fly.replaceChildren();
+    const cl=parts(ex.text);
+    const spans=cl.map(c=>{const s=document.createElement('span'); s.textContent=c; out.appendChild(s); return s;});
+    const caret=document.createElement('span'); caret.className='caret'; out.appendChild(caret);
+    return {cl, spans};
+  }
+  function finish(ex, spans){
+    spans.forEach(s=>s.classList.add('in'));
+    meter.style.width=Math.round(ex.conf*100)+'%'; conf.textContent=ex.conf.toFixed(2);
+    status.textContent='Done · '+parts(ex.text).filter(c=>c.trim()).length+' letter clusters · sure '+Math.round(ex.conf*100)+'%';
+  }
+
+  async function show(ex){
+    kind.textContent=ex.kind; status.textContent='Finding the text line…';
+    meter.style.width='0'; conf.textContent='–'; box.classList.remove('on');
+    img.style.opacity=0; await sleep(250); await load(ex); img.style.opacity=1;
+    const {cl, spans}=prepare(ex);
+    if(still){ placeBox(ex); box.classList.add('on'); finish(ex, spans); return; }
+    await sleep(350);
+    // 1. a scan beam sweeps the picture
+    beam.style.opacity=1;
+    await beam.animate([{left:'-70px'},{left:'calc(100% + 10px)'}],{duration:900,easing:'ease-in-out'}).finished;
+    beam.style.opacity=0;
+    // 2. the found text line gets a box
+    const a=placeBox(ex); box.classList.add('on');
+    status.textContent='Reading '+cl.filter(c=>c.trim()).length+' letter clusters…';
+    await sleep(450);
+    // 3. each cluster lifts out of the picture and flies to its place in the text
+    const size=parseFloat(getComputedStyle(out).fontSize), src=Math.max(10, a.h*0.62), n=cl.length;
+    let last=Promise.resolve();
+    for(let i=0;i<n;i++){
+      const target=spans[i];
+      if(!cl[i].trim()){ target.classList.add('in'); continue; }
+      const sx=a.x+(i+0.5)/n*a.w, sy=a.y+a.h/2;
+      const col=document.createElement('div'); col.className='rd-col';
+      Object.assign(col.style,{left:(a.x+i/n*a.w)+'px', top:a.y+'px', width:Math.max(3,a.w/n)+'px', height:a.h+'px'});
+      fly.appendChild(col);
+      col.animate([{opacity:0},{opacity:1},{opacity:0}],{duration:520}).finished.then(()=>col.remove());
+      const t=rel(target), f=document.createElement('span');
+      f.textContent=cl[i]; f.style.fontSize=size+'px'; fly.appendChild(f);
+      const fw=f.offsetWidth, fh=f.offsetHeight, k=src/size;
+      const from=`translate(${sx-fw*k/2}px,${sy-fh*k/2}px) scale(${k})`, to=`translate(${t.x}px,${t.y+(t.h-fh)/2}px) scale(1)`;
+      f.style.transformOrigin='0 0';
+      last=f.animate([{transform:from,opacity:0},{transform:from,opacity:1,offset:.15},{transform:to,opacity:1}],
+                     {duration:560,easing:'cubic-bezier(.3,.7,.2,1)'}).finished.then(()=>{target.classList.add('in'); f.remove();});
+      await sleep(Math.max(35, 900/n));
+    }
+    await last;
+    // 4. how sure it is
+    finish(ex, spans);
+    await sleep(2600);
+  }
+  function placeBox(ex){
+    const a=textArea(ex);
+    Object.assign(box.style,{left:(a.x-rel(img.parentElement).x-3)+'px', top:(a.y-rel(img.parentElement).y-3)+'px', width:(a.w+6)+'px', height:(a.h+6)+'px'});
+    return a;
+  }
+
+  let started=false;
+  const run=async()=>{ if(started) return; started=true;
+    if(still){ await show(EX[0]); return; }
+    for(let k=0;;k=(k+1)%EX.length) await show(EX[k]);
+  };
+  if('IntersectionObserver' in window){
+    new IntersectionObserver((es,o)=>{ if(es.some(e=>e.isIntersecting)){ o.disconnect(); run(); } },{rootMargin:'0px 0px -15% 0px'}).observe(stage);
+  } else run();
 })();
 
 // ---- report (KHOB, all lines; Chakkhu = full2 reading with both heads, 10 Nov 2026) -------------
