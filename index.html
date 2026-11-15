@@ -361,16 +361,17 @@ pre.code code{white-space:pre}
 .rd-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;height:22px}
 .rd-step{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
 .rd-src{font-size:12px;color:var(--muted);white-space:nowrap}
-.rd-pic{position:relative;height:150px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center}
-.rd-pic img{width:calc(100% - 28px);height:auto;max-height:126px;border-radius:6px;transition:opacity .35s}
+.rd-pic{position:relative;height:190px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center}
+.rd-pic img{border-radius:6px;transition:opacity .35s;display:block}
 .rd-box{position:absolute;border:2px solid var(--green);border-radius:6px;background:color-mix(in srgb,var(--green) 10%,transparent);opacity:0;transition:opacity .3s}
 .rd-box.on{opacity:1}
 .rd-beam{position:absolute;top:0;bottom:0;width:60px;left:-70px;opacity:0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--blue2) 50%,transparent),transparent)}
 .rd-status{height:20px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rd-arrow{display:grid;place-items:center;color:var(--blue2)}
 .rd-arrow .ic{width:28px;height:28px}
-.rd-out{height:150px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:14px 16px;font-size:26px;line-height:1.55;overflow:hidden;
-  display:flex;flex-wrap:wrap;align-content:center;color:var(--ink)}
+.rd-out{height:190px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:12px 16px;font-size:26px;line-height:1.5;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;gap:2px;color:var(--ink)}
+.rd-line{display:flex;flex-wrap:wrap;align-items:center;min-height:1.5em}
 .rd-out span{opacity:0;white-space:pre}
 .rd-out span.in{opacity:1}
 .rd-out span.caret{opacity:1;width:2px;height:1.2em;background:var(--blue);margin-left:2px;align-self:center;animation:rdBlink 1s steps(1) infinite}
@@ -387,7 +388,7 @@ pre.code code{white-space:pre}
 @media (max-width:760px){
   .rd-stage{grid-template-columns:minmax(0,1fr)}
   .rd-arrow{height:28px} .rd-arrow .ic{transform:rotate(90deg)}
-  .rd-pic,.rd-out{height:120px} .rd-pic img{max-height:100px}
+  .rd-pic,.rd-out{height:160px}
   .rd-out{font-size:21px}
 }
 </style>
@@ -505,16 +506,15 @@ pre.code code{white-space:pre}
   <div class="wrap">
     <div class="eyebrow">Try it</div>
     <h2>Watch Chakkhu read a picture</h2>
-    <p class="sub">Real pictures from the KHOB benchmark and Chakkhu's real answers: it finds the text line, reads every
-      Khmer letter cluster, and says how sure it is. Then try it on your own picture.</p>
+    <p class="sub">Real street signs, night photos and labels from the KHOB benchmark, and Chakkhu's real answers: it finds
+      every text line, reads each Khmer letter cluster, and says how sure it is. Then try it on your own picture.</p>
 
     <div class="card rd" aria-label="Animation: Chakkhu reads a picture">
       <div class="rd-stage" id="rdStage">
         <div class="rd-pane">
-          <div class="rd-head"><span class="rd-step" id="rdKind">Street sign</span><span class="rd-src">picture</span></div>
+          <div class="rd-head"><span class="rd-step" id="rdKind">Night photo · sign board, 3 lines</span><span class="rd-src">picture</span></div>
           <div class="rd-pic" id="rdPic">
-            <img id="rdImg" src="assets/demo/street.png" alt="">
-            <div class="rd-box" id="rdBox"></div>
+            <img id="rdImg" src="assets/demo/night_quote.jpg" alt="">
             <div class="rd-beam" id="rdBeam" aria-hidden="true"></div>
           </div>
           <div class="rd-status" id="rdStatus">Finding the text line…</div>
@@ -837,92 +837,104 @@ for line in r["lines"]:   # text, confidence, box
   })();
 })();
 
-// ---- "Watch Chakkhu read a picture": real KHOB crops + Chakkhu full3's real answers ----------------
-// box = where the line finder put the text, in the picture's own pixels (x, y, w, h)
+// ---- "Watch Chakkhu read a picture": real KHOB signs + Chakkhu full3's real readings ----------------------
+// Each line's box is where the demo's line finder put it, in the picture's own pixels: letters fly from it to the text.
 (function(){
-  const EX=[
-    {img:'assets/demo/street.png', w:1107, h:232, box:[15,25,1058,207], kind:'Street sign · daylight photo',
-     text:'នៅពេល បច្ចុប្បន្ន ប៉ុណ្ណោះ', conf:0.987},
-    {img:'assets/demo/clean.png', w:151, h:22, box:[4,1,140,19], kind:'Government letter · PDF',
-     text:'ច្បាប់ស្តីពីប្រព័ន្ធហិរញ្ញវត្ថុសាធារណៈ', conf:0.988},
-    {img:'assets/demo/phone_scan.png', w:130, h:19, box:[0,0,130,19], kind:'Letter scanned with a phone',
-     text:'ក្រុមប្រឹក្សាស្រុក ក្រុមប្រឹក្សាខណ្ឌ', conf:0.990},
-  ];
+  const EX=[ {  "img": "assets/demo/night_quote.jpg",  "w": 900,  "h": 425,  "kind": "Night photo · sign board, 3 lines",  "lines": [   {    "box": [     49,     46,     793,     110    ],    "text": "គ្មានសេចក្តីសុខឯណាស្មើនឹងសេចក្តី",    "conf": 0.975   },   {    "box": [     533,     136,     309,     118    ],    "text": "ស្ងប់ឡើយ!",    "conf": 0.998   },   {    "box": [     640,     296,     201,     83    ],    "text": "ពុទ្ធវចនៈ",    "conf": 0.998   }  ] }, {  "img": "assets/demo/sign_mixed.jpg",  "w": 900,  "h": 296,  "kind": "Shop sign · Khmer + English",  "lines": [   {    "box": [     37,     35,     496,     140    ],    "text": "បញ្ញវន្ត ឌីជីថល",    "conf": 0.992   },   {    "box": [     33,     165,     839,     90    ],    "text": "ALL FOR CAMBODIA",    "conf": 0.987   }  ] }, {  "img": "assets/demo/sign_street_400.jpg",  "w": 740,  "h": 277,  "kind": "Street name · Khmer digits",  "lines": [   {    "box": [     0,     0,     740,     277    ],    "text": "ផ្លូវលេខ ៤០០",    "conf": 0.99   }  ] }, {  "img": "assets/demo/night_bold.jpg",  "w": 900,  "h": 125,  "kind": "Night photo · bold two-colour letters",  "lines": [   {    "box": [     0,     0,     900,     125    ],    "text": "សំណង់មិនរៀបរយនៅ",    "conf": 0.986   }  ] }, {  "img": "assets/demo/sign_no_parking.jpg",  "w": 704,  "h": 451,  "kind": "Sign board · 2 lines",  "lines": [   {    "box": [     85,     60,     546,     143    ],    "text": "ហាមចត",    "conf": 0.999   },   {    "box": [     20,     207,     650,     236    ],    "text": "ច្រកចេញចូល",    "conf": 0.996   }  ] }, {  "img": "assets/demo/label_bicarbonate.jpg",  "w": 635,  "h": 143,  "kind": "Product label · Khmer + English",  "lines": [   {    "box": [     0,     0,     635,     143    ],    "text": "ប៊ីកាបូណាត Bicarbonate",    "conf": 0.959   }  ] }, {  "img": "assets/demo/sign_wc.jpg",  "w": 174,  "h": 142,  "kind": "Door sign",  "lines": [   {    "box": [     6,     18,     154,     65    ],    "text": "បន្ទប់ទឹក",    "conf": 0.994   },   {    "box": [     50,     85,     72,     40    ],    "text": "WC",    "conf": 0.997   }  ] }, {  "img": "assets/demo/night_decorative.jpg",  "w": 900,  "h": 174,  "kind": "Night photo · decorative font",  "lines": [   {    "box": [     0,     0,     900,     174    ],    "text": "បាសាក់ក្នុងភូមិសាស្ត្រ",    "conf": 0.995   }  ] }];
   const $=id=>document.getElementById(id);
   const stage=$('rdStage'); if(!stage) return;
-  const img=$('rdImg'), box=$('rdBox'), beam=$('rdBeam'), out=$('rdOut'), fly=$('rdFly');
+  const pic=$('rdPic'), img=$('rdImg'), beam=$('rdBeam'), out=$('rdOut'), fly=$('rdFly');
   const status=$('rdStatus'), kind=$('rdKind'), meter=$('rdMeter'), conf=$('rdConf');
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const seg=('Segmenter' in Intl)? new Intl.Segmenter('km',{granularity:'grapheme'}) : null;
   const parts=s=>seg? [...seg.segment(s)].map(x=>x.segment) : [...s];
   const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const rel=el=>{const a=el.getBoundingClientRect(), s=stage.getBoundingClientRect(); return {x:a.left-s.left,y:a.top-s.top,w:a.width,h:a.height};};
+  const boxes=[];   // one green box per text line, made as needed
 
+  function fit(ex){   // the picture as large as the frame allows, same shape
+    const pad=16, k=Math.min((pic.clientWidth-pad*2)/ex.w, (pic.clientHeight-pad*2)/ex.h);
+    img.style.width=Math.round(ex.w*k)+'px'; img.style.height=Math.round(ex.h*k)+'px';
+  }
   function load(ex){
-    return new Promise(res=>{ if(img.getAttribute('src')===ex.img && img.complete) return res();
+    return new Promise(res=>{ fit(ex); if(img.getAttribute('src')===ex.img && img.complete) return res();
       img.onload=()=>res(); img.onerror=()=>res(); img.src=ex.img; });
   }
-  function textArea(ex){   // the line finder's box, placed on the picture as it is drawn on screen
-    const r=rel(img), p=rel(img.parentElement), sx=r.w/ex.w, sy=r.h/ex.h, [bx,by,bw,bh]=ex.box;
-    return {x:r.x+bx*sx, y:r.y+by*sy, w:bw*sx, h:bh*sy, px:r.x-p.x, py:r.y-p.y, sx, sy};
+  function area(ex, b){   // a line box as drawn on screen, relative to the stage
+    const r=rel(img), sx=r.w/ex.w, sy=r.h/ex.h;
+    return {x:r.x+b[0]*sx, y:r.y+b[1]*sy, w:b[2]*sx, h:b[3]*sy};
   }
-  function prepare(ex){
-    out.replaceChildren(); fly.replaceChildren();
-    const cl=parts(ex.text);
-    const spans=cl.map(c=>{const s=document.createElement('span'); s.textContent=c; out.appendChild(s); return s;});
-    const caret=document.createElement('span'); caret.className='caret'; out.appendChild(caret);
-    return {cl, spans};
+  function showBoxes(ex, on){
+    const p=rel(pic);
+    ex.lines.forEach((l,i)=>{
+      if(!boxes[i]){ boxes[i]=document.createElement('div'); boxes[i].className='rd-box'; pic.appendChild(boxes[i]); }
+      const a=area(ex,l.box);
+      Object.assign(boxes[i].style,{left:(a.x-p.x-3)+'px', top:(a.y-p.y-3)+'px', width:(a.w+6)+'px', height:(a.h+6)+'px'});
+      boxes[i].classList.toggle('on', on);
+    });
+    boxes.slice(ex.lines.length).forEach(b=>b.classList.remove('on'));
   }
-  function finish(ex, spans){
-    spans.forEach(s=>s.classList.add('in'));
-    meter.style.width=Math.round(ex.conf*100)+'%'; conf.textContent=ex.conf.toFixed(2);
-    status.textContent='Done · '+parts(ex.text).filter(c=>c.trim()).length+' letter clusters · sure '+Math.round(ex.conf*100)+'%';
+  function prepare(ex){   // the finished text, laid out but invisible: every letter knows where it will land
+    out.replaceChildren(); fly.replaceChildren(); out.style.fontSize='';
+    const rows=ex.lines.map(l=>{
+      const row=document.createElement('div'); row.className='rd-line';
+      const spans=parts(l.text).map(c=>{const s=document.createElement('span'); s.textContent=c; row.appendChild(s); return s;});
+      out.appendChild(row); return spans;
+    });
+    const caret=document.createElement('span'); caret.className='caret'; out.lastChild.appendChild(caret);
+    // shrink the letters (never the box) until every line fits: the section never changes height
+    let fs=parseFloat(getComputedStyle(out).fontSize);
+    while(out.scrollHeight>out.clientHeight+1 && fs>12){ fs-=1; out.style.fontSize=fs+'px'; }
+    return rows;
+  }
+  const sureOf=ex=>{let n=0,t=0; ex.lines.forEach(l=>{n+=l.text.length; t+=l.conf*l.text.length;}); return n? t/n : 0;};
+  const count=ex=>ex.lines.reduce((n,l)=>n+parts(l.text).filter(c=>c.trim()).length,0);
+  function finish(ex, rows){
+    rows.flat().forEach(s=>s.classList.add('in'));
+    const c=sureOf(ex);
+    meter.style.width=Math.round(c*100)+'%'; conf.textContent=c.toFixed(2);
+    status.textContent='Done · '+ex.lines.length+(ex.lines.length>1?' lines · ':' line · ')+count(ex)+' letter clusters · sure '+Math.round(c*100)+'%';
   }
 
   async function show(ex){
-    kind.textContent=ex.kind; status.textContent='Finding the text line…';
-    meter.style.width='0'; conf.textContent='–'; box.classList.remove('on');
+    kind.textContent=ex.kind; status.textContent='Finding the text lines…';
+    meter.style.width='0'; conf.textContent='–'; showBoxes({lines:[]}, false);
     img.style.opacity=0; await sleep(250); await load(ex); img.style.opacity=1;
-    const {cl, spans}=prepare(ex);
-    if(still){ placeBox(ex); box.classList.add('on'); finish(ex, spans); return; }
+    const rows=prepare(ex);
+    if(still){ showBoxes(ex,true); finish(ex, rows); return; }
     await sleep(350);
-    // 1. a scan beam sweeps the picture
-    beam.style.opacity=1;
+    beam.style.opacity=1;                                            // 1. a scan beam sweeps the picture
     await beam.animate([{left:'-70px'},{left:'calc(100% + 10px)'}],{duration:900,easing:'ease-in-out'}).finished;
     beam.style.opacity=0;
-    // 2. the found text line gets a box
-    const a=placeBox(ex); box.classList.add('on');
-    status.textContent='Reading '+cl.filter(c=>c.trim()).length+' letter clusters…';
-    await sleep(450);
-    // 3. each cluster lifts out of the picture and flies to its place in the text
-    const size=parseFloat(getComputedStyle(out).fontSize), src=Math.max(10, a.h*0.62), n=cl.length;
+    showBoxes(ex,true);                                              // 2. every text line gets a box
+    status.textContent=(ex.lines.length>1? 'Found '+ex.lines.length+' lines · ' : '')+'reading '+count(ex)+' letter clusters…';
+    await sleep(500);
+    const size=parseFloat(getComputedStyle(out).fontSize);
     let last=Promise.resolve();
-    for(let i=0;i<n;i++){
-      const target=spans[i];
-      if(!cl[i].trim()){ target.classList.add('in'); continue; }
-      const sx=a.x+(i+0.5)/n*a.w, sy=a.y+a.h/2;
-      const col=document.createElement('div'); col.className='rd-col';
-      Object.assign(col.style,{left:(a.x+i/n*a.w)+'px', top:a.y+'px', width:Math.max(3,a.w/n)+'px', height:a.h+'px'});
-      fly.appendChild(col);
-      col.animate([{opacity:0},{opacity:1},{opacity:0}],{duration:520}).finished.then(()=>col.remove());
-      const t=rel(target), f=document.createElement('span');
-      f.textContent=cl[i]; f.style.fontSize=size+'px'; fly.appendChild(f);
-      const fw=f.offsetWidth, fh=f.offsetHeight, k=src/size;
-      const from=`translate(${sx-fw*k/2}px,${sy-fh*k/2}px) scale(${k})`, to=`translate(${t.x}px,${t.y+(t.h-fh)/2}px) scale(1)`;
-      f.style.transformOrigin='0 0';
-      last=f.animate([{transform:from,opacity:0},{transform:from,opacity:1,offset:.15},{transform:to,opacity:1}],
-                     {duration:560,easing:'cubic-bezier(.3,.7,.2,1)'}).finished.then(()=>{target.classList.add('in'); f.remove();});
-      await sleep(Math.max(35, 900/n));
+    for(let L=0; L<ex.lines.length; L++){                            // 3. letters fly, line by line
+      const a=area(ex, ex.lines[L].box), cl=parts(ex.lines[L].text), spans=rows[L], n=cl.length;
+      const src=Math.max(10, Math.min(a.h*0.62, 60)), gap=Math.max(28, 700/n);
+      for(let i=0;i<n;i++){
+        const target=spans[i];
+        if(!cl[i].trim()){ target.classList.add('in'); continue; }
+        const col=document.createElement('div'); col.className='rd-col';
+        Object.assign(col.style,{left:(a.x+i/n*a.w)+'px', top:a.y+'px', width:Math.max(3,a.w/n)+'px', height:a.h+'px'});
+        fly.appendChild(col);
+        col.animate([{opacity:0},{opacity:1},{opacity:0}],{duration:520}).finished.then(()=>col.remove());
+        const t=rel(target), f=document.createElement('span');
+        f.textContent=cl[i]; f.style.fontSize=size+'px'; fly.appendChild(f);
+        const fw=f.offsetWidth, fh=f.offsetHeight, k=src/size, sx=a.x+(i+0.5)/n*a.w, sy=a.y+a.h/2;
+        const from=`translate(${sx-fw*k/2}px,${sy-fh*k/2}px) scale(${k})`, to=`translate(${t.x}px,${t.y+(t.h-fh)/2}px) scale(1)`;
+        f.style.transformOrigin='0 0';
+        last=f.animate([{transform:from,opacity:0},{transform:from,opacity:1,offset:.15},{transform:to,opacity:1}],
+                       {duration:560,easing:'cubic-bezier(.3,.7,.2,1)'}).finished.then(()=>{target.classList.add('in'); f.remove();});
+        await sleep(gap);
+      }
+      await sleep(120);
     }
     await last;
-    // 4. how sure it is
-    finish(ex, spans);
-    await sleep(2600);
-  }
-  function placeBox(ex){
-    const a=textArea(ex);
-    Object.assign(box.style,{left:(a.x-rel(img.parentElement).x-3)+'px', top:(a.y-rel(img.parentElement).y-3)+'px', width:(a.w+6)+'px', height:(a.h+6)+'px'});
-    return a;
+    finish(ex, rows);                                                // 4. how sure it is
+    await sleep(2800);
   }
 
   let started=false;
@@ -930,6 +942,7 @@ for line in r["lines"]:   # text, confidence, box
     if(still){ await show(EX[0]); return; }
     for(let k=0;;k=(k+1)%EX.length) await show(EX[k]);
   };
+  addEventListener('resize',()=>{ const ex=EX.find(e=>e.kind===kind.textContent); if(ex){ fit(ex); showBoxes(ex, boxes.some(b=>b.classList.contains('on'))); } });
   if('IntersectionObserver' in window){
     new IntersectionObserver((es,o)=>{ if(es.some(e=>e.isIntersecting)){ o.disconnect(); run(); } },{rootMargin:'0px 0px -15% 0px'}).observe(stage);
   } else run();
