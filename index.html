@@ -391,6 +391,9 @@ pre.code code{white-space:pre}
   .rd-pic,.rd-out{height:160px}
   .rd-out{font-size:21px}
 }
+
+.data-note{margin-top:1.25rem;color:var(--muted, #666);font-size:.95rem}
+.data-note a{font-weight:600}
 </style>
 </head>
 <body>
@@ -668,6 +671,7 @@ print(r["text"])
 for line in r["lines"]:   # text, confidence, box
     print(line["confidence"], line["text"])</pre></div></div>
     </div>
+    <p class="data-note">Training data: <a href="https://huggingface.co/datasets/muyleanging/Chakkhu-OCR-Khmer-Data" target="_blank" rel="noopener">Chakkhu-OCR-Khmer-Data</a> · 303k drawn lines in 10 styles (signs, night, old print …), the text they come from, and the list of open sets. Access on request.</p>
   </div>
 </section>
 
