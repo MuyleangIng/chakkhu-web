@@ -155,6 +155,12 @@ table.ex td:last-child{font-size:19px}
 .acct{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:30px;letter-spacing:.06em;font-weight:700}
 .copy{align-self:flex-start;background:#ffffff22;color:#fff;border:1px solid #ffffff44}
 .bank small{opacity:.85}
+.bank-row{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center}
+.bank-row .acct{font-size:24px;white-space:nowrap}
+.bank-row>*{min-width:0}
+.bank .khqr{width:100%;height:auto;display:block;border-radius:12px;background:#fff}
+.bank-row .acct-sm{font-size:20px}
+.bank .copy{margin-top:8px}
 
 /* anchors land below the sticky bar */
 section,header{scroll-margin-top:70px}
@@ -227,6 +233,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
   .cta .btn{flex:1;justify-content:center;white-space:nowrap;padding:12px 10px;font-size:15px}
   footer .wrap{flex-direction:column}
 }
+@media (max-width:560px){.bank-row{grid-template-columns:1fr}.bank .khqr{max-width:230px;margin:0 auto}}
 
 /* copyable code (Use it + Citation), same look as the VoxPocket and Chakkhu sites */
 .codebox{position:relative;margin-top:10px}
@@ -439,14 +446,9 @@ pre.code code{white-space:pre}
     <div class="navlinks">
       <a href="#top"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg><span>Home</span></a>
       <a href="#try"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg><span>Try it</span></a>
-      <a href="#why"><svg class="ic" aria-hidden="true"><use href="#i-languages"/></svg><span class="lbl-x">Why</span></a>
       <a href="#architecture"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg><span>Architecture</span></a>
       <a href="#report"><svg class="ic" aria-hidden="true"><use href="#i-gauge"/></svg><span>Report</span></a>
-      <a href="#data"><svg class="ic" aria-hidden="true"><use href="#i-database"/></svg><span class="lbl-x">Data</span></a>
       <a href="#use"><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg><span>Use it</span></a>
-      <a href="#roadmap"><svg class="ic" aria-hidden="true"><use href="#i-flag"/></svg><span>Roadmap</span></a>
-      <a href="#cite"><svg class="ic" aria-hidden="true"><use href="#i-quote"/></svg><span class="lbl-x">Cite</span></a>
-      <a href="https://muyleanging.github.io/akkhara-web/" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-keyboard"/></svg><span class="lbl-x">Akkhara</span></a>
       <a href="#donate"><svg class="ic" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg><span>Donate</span></a>
     </div>
     <button id="theme" class="iconbtn" title="Light / dark" aria-label="Switch light or dark mode"><svg class="ic" aria-hidden="true"><use href="#i-sun-moon"/></svg></button>
